@@ -15,7 +15,7 @@
     {
         $strategy = $_GET[STRATEGY];
 
-        if (!(strtolower($strategy) === "smart" || strtolower($strategy) === "random")) {
+        if (!($strategy === "Smart" || $strategy === "Random")) {
             echo "{\"response\": false, \"reason\": \"Unknown Strategy\"}";
             exit;
         }
@@ -30,7 +30,7 @@
 
     check_if_strategy_exists();
     check_if_strategy_is_valid();
-    $board = new Board(15);
+    $board = new Board(15, $_GET[STRATEGY]);
     create_and_write_to_file($board->pid, $board->toJson());
 
     echo "{\"response\":true, \"pid\":\"" . $board->pid . "\"}";

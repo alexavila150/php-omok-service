@@ -4,6 +4,7 @@
     require_once('Game.php');
 
     define('PID', 'pid');
+    define('STRATEGY', 'strategy');
     define('MOVE', 'move');
     define('DATA', '../data/');
 
@@ -121,9 +122,9 @@
             $this->game = new Game($this->board);
             $this->game->make_client_move($this->x_req, $this->y_req);
             $move_coordinates = $this->game->get_server_move();
+
             $this->x_res = $move_coordinates[0];
             $this->y_res = $move_coordinates[1];
-
             //TODO:Check if tied
 
             Index::send_json_response();

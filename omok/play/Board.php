@@ -3,12 +3,14 @@
         public $size;
         public $places;
         public $pid;
+        public $strategy;
         public $winner_row = [];
 
-        function __construct($size=15){
+        function __construct($size=15, $strategy=''){
             $this->size = $size;
             $this->places = array_fill(0, $size, array_fill(0, $size, 0));
             $this->pid = uniqid();
+            $this->strategy = $strategy;
         }
 
         function update_file(){
@@ -76,6 +78,18 @@
                 return true;
             }
 
+            if ($this->array_is_fill_with($neg_diagonal_row, $player_num)) {
+                $this->winner_row = [];
+                array_push($this->winner_row,
+                    $i + 2, $j - 2,
+                    $i + 1, $j - 1,
+                    $i, $j,
+                    $i - 1, $j + 1,
+                    $i - 2, $j + 2
+                );
+                return true;
+            }
+
             return false;
         }
 
@@ -103,6 +117,7 @@
             $board->size = $obj->size;
             $board->places = $obj->places;
             $board->pid = $obj->pid;
+            $board->strategy = $obj->strategy;
             return $board;
         }
 
