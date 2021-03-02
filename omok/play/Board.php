@@ -25,74 +25,11 @@
         }
 
         function player_won($player_num){
-            for($i = 2; $i < $this->size - 3; $i++){
-                for($j = 2; $j < $this->size - 3; $j++){
-                    if( $this->check_if_rows_are_valid($i, $j, $player_num)){
-                        return true;
-                    }
-                }
-            }
-            return false;
+            $this->check_if_horizontals_are_full($player_num);
+            $this->check_if_verticals_are_full($player_num);
+            $this->check_if_diagonals_are_full($player_num);
+            return sizeof($this->winner_row) == 10;
         }
-
-        private function check_if_rows_are_valid($i, $j, $player_num)
-        {
-            $horizontal_row = $this->get_row($i, $j, 1, 0);
-            $vertical_row = $this->get_row($i, $j, 0, 1);
-            $diagonal_row = $this->get_row($i, $j, 1, 1);
-            $neg_diagonal_row = $this->get_row($i, $j, 1, -1);
-
-            if ($this->array_is_fill_with($horizontal_row, $player_num)) {
-                $this->winner_row = [];
-                array_push($this->winner_row,
-                    $i - 0, $j,
-                    $i - 1, $j,
-                    $i, $j,
-                    $i + 1, $j,
-                    $i + 2, $j
-                );
-                return true;
-            }
-
-            if ($this->array_is_fill_with($vertical_row, $player_num)) {
-                $this->winner_row = [];
-                array_push($this->winner_row,
-                    $i, $j - 2,
-                    $i, $j - 1,
-                    $i, $j,
-                    $i, $j + 1,
-                    $i, $j + 2
-                );
-                return true;
-            }
-
-            if ($this->array_is_fill_with($diagonal_row, $player_num)) {
-                $this->winner_row = [];
-                array_push($this->winner_row,
-                    $i - 2, $j - 2,
-                    $i - 1, $j - 1,
-                    $i, $j,
-                    $i + 1, $j + 1,
-                    $i + 2, $j + 2
-                );
-                return true;
-            }
-
-            if ($this->array_is_fill_with($neg_diagonal_row, $player_num)) {
-                $this->winner_row = [];
-                array_push($this->winner_row,
-                    $i + 2, $j - 2,
-                    $i + 1, $j - 1,
-                    $i, $j,
-                    $i - 1, $j + 1,
-                    $i - 2, $j + 2
-                );
-                return true;
-            }
-
-            return false;
-        }
-
 
         function array_is_fill_with($array, $element){
             foreach($array as $num){
@@ -103,12 +40,24 @@
             return true;
         }
 
+        //Gets 5 element row from dx and dy direction with x and y being the center
         function get_row($x, $y, $dx, $dy){
             $row = array();
             for($i = -2; $i < 3; $i++){
                 array_push($row, $this->places[$x + $dx * $i][$y + $dy * $i]);
             }
             return $row;
+        }
+
+        function is_full(){
+            foreach($this->places as $row){
+                foreach($row as $item){
+                    if($item === 0){
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         static function fromJson($json){
@@ -144,5 +93,74 @@
                 $result = $result . "<br>";
             }
             return $result;
+        }
+
+        private function check_if_diagonals_are_full($player_num)
+        {
+            for ($i = 2; $i < $this->size - 3; $i++) {
+                for ($j = 2; $j < $this->size - 3; $j++) {
+                    $diagonal_row = $this->get_row($i, $j, 1, 1);
+                    if ($this->array_is_fill_with($diagonal_row, $player_num)) {
+                        $this->winner_row = [];
+                        array_push($this->winner_row,
+                            $i - 2, $j - 2,
+                            $i - 1, $j - 1,
+                            $i, $j,
+                            $i + 1, $j + 1,
+                            $i + 2, $j + 2
+                        );
+                    }
+
+                    $neg_diagonal_row = $this->get_row($i, $j, 1, -1);
+                    if ($this->array_is_fill_with($neg_diagonal_row, $player_num)) {
+                        $this->winner_row = [];
+                        array_push($this->winner_row,
+                            $i + 2, $j - 2,
+                            $i + 1, $j - 1,
+                            $i, $j,
+                            $i - 1, $j + 1,
+                            $i - 2, $j + 2
+                        );
+                    }
+                }
+            }
+        }
+
+        private function check_if_verticals_are_full($player_num)
+        {
+            for ($i = 0; $i < $this->size; $i++) {
+                for ($j = 2; $j < $this->size - 3; $j++) {
+                    $vertical_row = $this->get_row($i, $j, 0, 1);
+                    if ($this->array_is_fill_with($vertical_row, $player_num)) {
+                        $this->winner_row = [];
+                        array_push($this->winner_row,
+                            $i, $j - 2,
+                            $i, $j - 1,
+                            $i, $j,
+                            $i, $j + 1,
+                            $i, $j + 2
+                        );
+                    }
+                }
+            }
+        }
+
+        private function check_if_horizontals_are_full($player_num)
+        {
+            for ($i = 2; $i < $this->size - 3; $i++) {
+                for ($j = 0; $j < $this->size; $j++) {
+                    $horizontal_row = $this->get_row($i, $j, 1, 0);
+                    if ($this->array_is_fill_with($horizontal_row, $player_num)) {
+                        $this->winner_row = [];
+                        array_push($this->winner_row,
+                            $i - 0, $j,
+                            $i - 1, $j,
+                            $i, $j,
+                            $i + 1, $j,
+                            $i + 2, $j
+                        );
+                    }
+                }
+            }
         }
     }

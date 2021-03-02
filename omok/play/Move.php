@@ -1,8 +1,4 @@
 <?php
-    class Move{
-
-    }
-
     class MoveDTO {
         public $x;
         public $y;

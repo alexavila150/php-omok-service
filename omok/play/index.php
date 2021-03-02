@@ -85,7 +85,7 @@
                 $this->x_req,
                 $this->y_req,
                 $this->board->player_won(1),
-                false,
+                $this->board->is_full(),
                 $this->game->get_player1_returning_row()
             );
 
@@ -93,7 +93,7 @@
                 $this->x_res,
                 $this->y_res,
                 $this->board->player_won(2),
-                false,
+                $this->board->is_full(),
                 $this->game->get_player2_returning_row()
             );
 
@@ -121,11 +121,17 @@
 
             $this->game = new Game($this->board);
             $this->game->make_client_move($this->x_req, $this->y_req);
-            $move_coordinates = $this->game->get_server_move();
 
+            if($this->board->is_full()){
+                Index::send_json_response();
+                exit;
+            }
+
+            $move_coordinates = $this->game->get_server_move();
             $this->x_res = $move_coordinates[0];
             $this->y_res = $move_coordinates[1];
-            //TODO:Check if tied
+            $this->board->places[$this->x_res][$this->y_res] = 2;
+            $this->board->update_file();
 
             Index::send_json_response();
         }

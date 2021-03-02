@@ -5,13 +5,20 @@
 
         function pickPlace()
         {
-            do{
-                $x = rand(0, 14);
-                $y = rand(0, 14);
+            $free_spaces = $this->get_free_spaces();
+            return $free_spaces[rand(0, sizeof($free_spaces))];
+        }
 
-            }while($this->board->places[$x][$y] != 0);
-            $this->board->places[$x][$y] = 2;
-            $this->board->update_file();
-            return [$x, $y];
+        function get_free_spaces(){
+            echo "";
+            $free_spaces = [];
+            for ($i = 0; $i < $this->board->size; $i++){
+                for ($j = 0; $j < $this->board->size; $j++){
+                    if($this->board->place_is_empty($i, $j)){
+                        array_push($free_spaces, [$i, $j]);
+                    }
+                }
+            }
+            return $free_spaces;
         }
     }

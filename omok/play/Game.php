@@ -24,6 +24,7 @@
             return $strategy->pickPlace();
         }
 
+        //Gets the winner row of player 1 if he won
         function get_player1_returning_row(){
             if(!$this->board->player_won(1)){
                 return [];
@@ -36,6 +37,7 @@
             return $this->board->winner_row;
         }
 
+        //Gets the winner row of player to if he won
         function get_player2_returning_row(){
             if(!$this->board->player_won(2)){
                 return [];
